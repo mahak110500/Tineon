@@ -59,13 +59,9 @@ export class DashboardComponent implements OnInit {
 
 		return this.approvedEvents.filter((event:any) => {
 			if (event.recurrence) {
-				
 				const rrule = RRule.fromString(event.recurrence);
-				console.log(rrule);
-				
 				const recurringDates = rrule.all();
 				
-
 				return recurringDates.some(date => moment(date).isSame(selectedDate, 'day'));
 			} else if (event.recurring_dates) {
 
@@ -80,6 +76,24 @@ export class DashboardComponent implements OnInit {
 			return false;
 		});
 	}
+
+
+	// getEventsOnSelectedDate() {
+	// 	if (!this.selected) {
+	// 		return [];
+	// 	}
+
+	// 	const selectedDateISOString = this.selected.toISOString().split('T')[0];
+	// 	const selectedDate = selectedDateISOString + 'T00:00:00.000Z';
+	// 	console.log(selectedDate);
+
+	// 	return this.approvedEvents.filter((event: any) => {
+	// 		const eventDate = event.date_from.split('T')[0] + 'T00:00:00.000Z';
+	// 		return eventDate === selectedDate;
+	// 	});
+	// }
+
+
 
 
 

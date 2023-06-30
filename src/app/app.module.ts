@@ -21,6 +21,9 @@ import { SidebarComponent } from './pages/common/sidebar/sidebar.component';
 import { LayoutComponent } from './pages/common/layout/layout.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import {MatMenuModule} from '@angular/material/menu';
+import { ClubwallComponent } from './pages/clubwall/clubwall.component';
+import { CommunityComponent } from './pages/community/community.component';
+import { OrganizerComponent } from './pages/organizer/organizer.component';
 
 @NgModule({
 	declarations: [
@@ -30,7 +33,10 @@ import {MatMenuModule} from '@angular/material/menu';
 		NavbarComponent,
 		SidebarComponent,
 		LayoutComponent,
-		LoginComponent
+		LoginComponent,
+  ClubwallComponent,
+  CommunityComponent,
+  OrganizerComponent
 	],
 	imports: [
 		BrowserModule,

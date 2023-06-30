@@ -4,6 +4,9 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { LayoutComponent } from './pages/common/layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ClubwallComponent } from './pages/clubwall/clubwall.component';
+import { CommunityComponent } from './pages/community/community.component';
+import { OrganizerComponent } from './pages/organizer/organizer.component';
 
 const routes: Routes = [
 	{
@@ -20,6 +23,9 @@ const routes: Routes = [
 
         children: [
             { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' }},
+            { path: 'clubwall', component: ClubwallComponent},
+            { path: 'community', component: CommunityComponent},
+            { path: 'organizer', component: OrganizerComponent},
         ]
     }
 ];

@@ -24,6 +24,9 @@ import {MatMenuModule} from '@angular/material/menu';
 import { ClubwallComponent } from './pages/clubwall/clubwall.component';
 import { CommunityComponent } from './pages/community/community.component';
 import { OrganizerComponent } from './pages/organizer/organizer.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+
+
 
 @NgModule({
 	declarations: [
@@ -52,7 +55,8 @@ import { OrganizerComponent } from './pages/organizer/organizer.component';
 		MatCardModule,
 		MatNativeDateModule,
 		MatIconModule,
-		MatMenuModule
+		MatMenuModule,
+		FullCalendarModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

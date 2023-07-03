@@ -2,3 +2,52 @@
     width: 300px;
   }
    */
+
+.center-header {
+	text-align: center;
+}
+
+.day {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.date {
+	font-size: 16px;
+}
+
+
+.date-navigation {
+	/* display: flex; */
+	display: -webkit-box;
+	align-items: center;
+}
+
+.nav-buttons{
+	margin-left:35px;
+}
+
+
+.arrow {
+	border: solid rgb(8, 8, 8);
+	border-width: 0 3px 3px 0;
+	display: inline-block;
+	padding: 5px;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+.right {
+	transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+}
+
+.left {
+	transform: rotate(135deg);
+	-webkit-transform: rotate(135deg);
+}
+
+.eventsList{
+	max-height: 460px;
+    overflow-y: scroll;
+}

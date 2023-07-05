@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule,DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
@@ -25,6 +25,12 @@ import { ClubwallComponent } from './pages/clubwall/clubwall.component';
 import { CommunityComponent } from './pages/community/community.component';
 import { OrganizerComponent } from './pages/organizer/organizer.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { ClubwallNewsComponent } from './pages/clubwall/clubwall-news/clubwall-news.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { EventDetailsComponent } from './pages/event-details/event-details.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { UserInfoComponent } from './pages/event-details/user-info/user-info.component';
+
 
 
 
@@ -39,7 +45,10 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 		LoginComponent,
   ClubwallComponent,
   CommunityComponent,
-  OrganizerComponent
+  OrganizerComponent,
+  ClubwallNewsComponent,
+  EventDetailsComponent,
+  UserInfoComponent
 	],
 	imports: [
 		BrowserModule,
@@ -56,9 +65,11 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 		MatNativeDateModule,
 		MatIconModule,
 		MatMenuModule,
-		FullCalendarModule
+		FullCalendarModule,
+		MatPaginatorModule,
+		MatDialogModule
 	],
-	providers: [],
+	providers: [DatePipe],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

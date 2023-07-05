@@ -23,8 +23,8 @@
 	align-items: center;
 }
 
-.nav-buttons{
-	margin-left:35px;
+.nav-buttons {
+	margin-left: 35px;
 }
 
 
@@ -47,7 +47,64 @@
 	-webkit-transform: rotate(135deg);
 }
 
-.eventsList{
-	max-height: 460px;
-    overflow-y: scroll;
+.eventsList {
+	max-height: 500px;
+	overflow-y: scroll;
+}
+
+.description {
+	width: 250px;
+	white-space: nowrap;
+	overflow: hidden !important;
+	text-overflow: ellipsis;
+
+}
+
+.example-card {
+	max-width: 300px;
+}
+
+.example-header-image {
+	background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+	background-size: cover;
+}
+
+/* Add this to your component's CSS file or global styles */
+.news-container {
+	display: flex;
+	/* Use flexbox to create a horizontal layout */
+	justify-content: center;
+	/* Optional: To center the cards horizontally */
+}
+
+.card-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	/* Allow cards to wrap to the next row if needed */
+}
+
+.example-card {
+	width: 300px;
+	margin: 10px;
+}
+
+
+.text-truncate {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 100%;
+	/* Adjust width to match parent container */
+}
+
+.show-btn{
+	margin-top: 50px;
+    padding: 10px;
+	color: white;
+	background-color: rgb(241, 211, 40);
+	border: solid  rgb(241, 211, 40);
+	border-width: 0 3px 3px 0;
+	font-size: 18px;
 }

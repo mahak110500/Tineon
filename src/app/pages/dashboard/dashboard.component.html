@@ -125,11 +125,16 @@
                                         *ngIf="getEventsOnNewDate().length > 0 || getCoursesOnNewDate().length > 0">
                                         <ul>
                                             <li *ngFor="let event of getEventsOnNewDate()">
-
+                                                <p style="color: red;">{{ getDisplayNameForType(event.type) }}</p>
                                                 <h3>{{ event.name }}</h3>
+                                                <p class="description" [innerHTML]="event.description"></p>
+
                                             </li>
                                             <li *ngFor="let course of getCoursesOnNewDate()">
+                                                <p style="color: red;">{{ getDisplayNameForType(course.type) }}</p>
                                                 <h3>{{ course.name }}</h3>
+                                                <p class="description" [innerHTML]="course.description"></p>
+
                                             </li>
                                         </ul>
                                     </ng-container>
@@ -178,21 +183,20 @@
             <div class="card h-100 p-3">
                 <div class="overflow-hidden">
                     <h1>Club Appointment</h1>
-
                     <div class="eventsList">
                         <ul>
-                            <li *ngFor="let event of clubEvents()">
-                                <h1>{{ event.name }}</h1>
-                                <p>Date: {{ event.date_from | date:'longDate' }}</p>
-                                <!-- <p>Start Time: {{ event.start_time }}</p>
-                                <p>End Time: {{ event.end_time }}</p> -->
+                            <li *ngFor="let item of eventDates" >
+                                <div (click)="navigateToEventDetails(item.id, item.date)">
+                                    <a><img [src]="item.image" alt="Event/Course Image" style="width: 50px; height: 50px;"></a>
+                                    <p style="color: rgb(118, 121, 121);">{{ item.date }}</p>
+                                    <h2 style="font-size: 14px;">{{ item.name }}</h2>
+                                </div>
+                              
                             </li>
-                            <li *ngFor="let course of clubCourses()">
-                                <h1>{{ course.name }}</h1>
-                                <p>Date: {{ course.date_from | date:'longDate' }}</p>
-                                <!-- <p>Start Time: {{ course.start_time }}</p>
-                                <p>End Time: {{ course.end_time }}</p> -->
-                            </li>
+                            <!-- <li *ngFor="let item of combinedDates">
+                                <p style="color: rgb(118, 121, 121);">{{ item.date }}</p>
+                                <h2 style="font-size: 16px;">{{ item.name }}</h2>
+                            </li> -->
                         </ul>
                     </div>
 
@@ -201,6 +205,42 @@
         </div>
         <!-- CLUB APPOINTMENT ENDS -->
 
+    </div>
+
+    <div class="row mt-4">
+        <!-- CURRENT CLUB NEWS STARTS -->
+        <div class="col-lg-12 mb-lg-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <h1>Current Club-News</h1>
+
+                        <div class="news-container">
+                            <div class="card-wrapper">
+                                <ng-container *ngFor="let data of clubNewsData">
+                                    <mat-card class="example-card">
+                                        <mat-card-header>
+                                            <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                                            <mat-card-title>{{data.title}}</mat-card-title>
+                                        </mat-card-header>
+                                        <img mat-card-image [src]="data.imageUrls"
+                                            alt="Photo of a Shiba Inu">
+                                        <mat-card-content>
+                                            <p class="text-truncate" [innerHTML]="data.text"></p>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="show-btn" [routerLink]="['/clubwall-news']">Show All</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CURRENT CLUB NEWS ENDS -->
     </div>
 
 </div>

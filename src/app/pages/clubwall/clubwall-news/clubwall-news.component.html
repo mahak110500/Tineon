@@ -1,0 +1,50 @@
+<div class="container-fluid py-4">
+    <div class="row mt-4">
+        <h1>Current Club-News</h1>
+
+
+        <!-- CURRENT CLUB NEWS STARTS -->
+        <div class="col-lg-12 mb-lg-0 mb-4">
+            <div class="card">
+                <!-- Pagination start -->
+                <mat-paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+                    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page of users">
+                </mat-paginator>
+                <!-- Pagination end -->
+
+                <div class="card-body p-3">
+                    <div class="row">
+
+                        <div class="row news-list">
+                            <div class="col-lg-12">
+                                <div class="single-news-container">
+                                    <div class="single-news clearfix" *ngFor="let data of newsData">
+                                        <div class="news-img">
+                                            <a><img class="news-img" [src]="data.imageUrls" alt=""/></a>
+                                        </div>
+                                        <div class="news-info">
+                                            <div class="fix">
+                                                <h4 class="post-title floatleft" style="font-weight: bold;"><a>{{data.title}}</a></h4>
+                                            </div>
+                                            <div class="news-description">
+                                                <p [innerHTML]="data.text"></p>
+                                            </div>
+                                            <div class="publisher-info">
+                                                <p>Published by</p>
+                                                <span>{{data?.user?.firstname}}{{data?.user?.lastname}}</span>
+                                                <p>{{data?.created_at | date: 'longDate'}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- CURRENT CLUB NEWS ENDS -->
+    </div>
+
+</div>

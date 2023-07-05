@@ -28,7 +28,6 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/assets/css/soft-ui-dashboard.css",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "./node_modules/font-awesome/css/font-awesome.css",
               "src/styles.css"
             ],
             "scripts": [

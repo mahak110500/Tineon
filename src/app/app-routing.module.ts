@@ -7,6 +7,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ClubwallComponent } from './pages/clubwall/clubwall.component';
 import { CommunityComponent } from './pages/community/community.component';
 import { OrganizerComponent } from './pages/organizer/organizer.component';
+import { ClubwallNewsComponent } from './pages/clubwall/clubwall-news/clubwall-news.component';
+import { EventDetailsComponent } from './pages/event-details/event-details.component';
 
 const routes: Routes = [
 	{
@@ -24,8 +26,11 @@ const routes: Routes = [
         children: [
             { path: 'dashboard', component: DashboardComponent, data: { title: 'Dashboard' }},
             { path: 'clubwall', component: ClubwallComponent},
+            { path: 'clubwall-news', component: ClubwallNewsComponent},
             { path: 'community', component: CommunityComponent},
             { path: 'organizer', component: OrganizerComponent},
+            { path: 'event-details/:id', component: EventDetailsComponent },
+
         ]
     }
 ];

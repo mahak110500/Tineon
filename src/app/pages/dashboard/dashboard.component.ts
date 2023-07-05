@@ -2,11 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { RRule } from 'rrule';
 import * as moment from 'moment';
-import { CalendarOptions } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import { CalendarOptions, formatDate } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
+
+interface Event {
+	name: string;
+	date_from: string;
+	start_time: string;
+	end_time: string;
+	recurrence?: string;
+	recurring_dates?: { date_from: string; start_time: string; end_time: string }[];
+}
 
 
 @Component({
@@ -15,7 +25,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 	styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-
 	calendarOptions: CalendarOptions = {
 		plugins: [timeGridPlugin, interactionPlugin],
 		initialView: 'timeGridDay', // Set initial view to timeGridDay
@@ -35,18 +44,26 @@ export class DashboardComponent implements OnInit {
 	newDate = new Date();
 	approvedEvents: any = [];
 	allCoursesData: any = [];
+	clubNewsData: any = [];
+
+	eventDates: { name: string; date: string; image: string; id: number }[] = [];
+
+	courseDates: { name: string, date: string }[] = [];
 
 
 
 	constructor(
-		private dashboardService: DashboardService
+		private dashboardService: DashboardService,
+		private router: Router,
+		private datePipe: DatePipe
+
 	) { }
 
 	ngOnInit(): void {
+
 		this.allEvents();
 		this.allCourses();
-
-
+		this.currentClubNews();
 
 		setTimeout(() => {
 			this.calendarOptions = {
@@ -56,6 +73,7 @@ export class DashboardComponent implements OnInit {
 			};
 		}, 2500);
 
+
 	}
 
 	goToPreviousDay() {
@@ -64,16 +82,22 @@ export class DashboardComponent implements OnInit {
 
 	goToNextDay() {
 		this.newDate = new Date(this.newDate.getTime() + 24 * 60 * 60 * 1000);
-
 	}
 
-
+	currentClubNews() {
+		this.dashboardService.getCurrentClubNews().subscribe((res: any) => {
+			this.clubNewsData = res;
+		})
+	}
 
 
 	allEvents() {
 		this.dashboardService.getApprovedEvents().subscribe((res) => {
 			this.approvedEvents = res
-			console.log(this.approvedEvents);
+			// console.log(this.approvedEvents);
+			this.processEvents();
+			this.combineDates();
+
 		});
 	}
 
@@ -83,11 +107,137 @@ export class DashboardComponent implements OnInit {
 		this.dashboardService.getAllCources(data).subscribe((res) => {
 			if (res?.isError == false) {
 				this.allCoursesData = res.result
-				console.log(res);
+				// console.log(res);
+				this.processCourses();
+				this.combineDates();
 			}
 		})
+	}
+
+	parseDate(dateString: string): Date {
+		const regex = /(\d{4}-\d{2}-\d{2})/; // Regular expression to match "YYYY-MM-DD" format
+		const match = dateString.match(regex);
+
+		if (match) {
+			return new Date(match[0]);
+		} else {
+			return new Date(dateString);
+		}
+	}
+
+	compareDates(date1: Date, date2: Date): number {
+		const date1Only = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+		const date2Only = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+
+		if (date1Only < date2Only) {
+			return -1;
+		} else if (date1Only > date2Only) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	processEvents(): void {
+
+		const today = new Date();
+
+		this.approvedEvents.forEach((event: any) => {
+			if (event.recurrence === null) {
+				// Process events with recurring_dates
+				const recurringDates = JSON.parse(event.recurring_dates);
+				recurringDates.forEach((date: any) => {
+					const eventDate = new Date(date.date_from);
+					const pictureVideo = JSON.parse(event.picture_video);
+					if (eventDate >= today) {
+						this.eventDates.push({
+							name: event.name,
+							date: date.date_from,
+							image: pictureVideo[0],
+							id: event.id
+						});
+					}
+
+				});
+			} else {
+				// Process events with recurrence string
+				const rule = RRule.fromString(event.recurrence);
+				const recurringDates = rule.all();
+
+				recurringDates.forEach(date => {
+					const pictureVideo = JSON.parse(event.picture_video);
+
+					if (date >= today) {
+						this.eventDates.push({
+							name: event.name,
+							date: formatDate(date),
+							image: pictureVideo[0],
+							id: event.id
+						});
+					}
+				});
+			}
+		});
+		// console.log(this.eventDates);
+
+
+		this.eventDates.sort((a, b) => {
+			const date1 = this.parseDate(a.date);
+			const date2 = this.parseDate(b.date);
+			return this.compareDates(date1, date2);
+		});
+	}
+
+
+	processCourses(): void {
+		const today = new Date();
+
+		this.allCoursesData.forEach((course: any) => {
+			if (course.recurrence === null) {
+				// Process courses with recurring_dates
+				const recurringDates = JSON.parse(course.recurring_dates);
+				recurringDates.forEach((date: any) => {
+					const courseDate = new Date(date.date_from);
+					if (courseDate >= today) {
+						this.courseDates.push({ name: course.name, date: `${date.date_from} ${date.start_time} - ${date.end_time}` });
+					}
+				});
+			} else {
+				// Process courses with recurrence string
+				const rule = RRule.fromString(course.recurrence);
+				const recurringDates = rule.all();
+
+				recurringDates.forEach(date => {
+					if (date >= today) {
+						this.courseDates.push({ name: course.name, date: date.toISOString() });
+					}
+				});
+			}
+		});
+
+		this.courseDates.sort((a, b) => {
+			const date1 = this.parseDate(a.date);
+			const date2 = this.parseDate(b.date);
+
+			return this.compareDates(date1, date2);
+		});
 
 	}
+
+	combinedDates: { name: string, date: string }[] = [];
+
+	combineDates(): void {
+		this.combinedDates = [...this.eventDates, ...this.courseDates];
+		this.combinedDates.sort((a, b) => {
+			const date1 = this.parseDate(a.date);
+			const date2 = this.parseDate(b.date);
+
+			return this.compareDates(date1, date2);
+		});
+	}
+
+
+
 
 	onDateChange(event: any) {
 		if (event && event instanceof Date) {
@@ -126,59 +276,10 @@ export class DashboardComponent implements OnInit {
 
 	getEventsOnSelectedDate() {
 		return this.getItemsOnSelectedDate(this.approvedEvents);
-
-		// if (!this.selected) {
-		// 	return [];
-		// }
-
-		// const selectedDate = moment(this.selected).startOf('day');
-
-		// return this.approvedEvents.filter((event: any) => {
-		// 	if (event.recurrence) {
-		// 		const rrule = RRule.fromString(event.recurrence);
-		// 		const recurringDates = rrule.all();
-
-		// 		return recurringDates.some(date => moment(date).isSame(selectedDate, 'day'));
-		// 	} else if (event.recurring_dates) {
-
-		// 		const recurringDates = JSON.parse(event.recurring_dates);
-
-		// 		return recurringDates.some((recurringDate: any) => {
-		// 			const eventDate = moment(recurringDate.date_from, 'YYYY-MM-DD');
-		// 			return eventDate.isSame(selectedDate, 'day');
-		// 		});
-		// 	}
-
-		// 	return false;
-		// });
 	}
 
 	getCoursesOnSelectedDate() {
 		return this.getItemsOnSelectedDate(this.allCoursesData);
-
-		// if (!this.selected) {
-		// 	return [];
-		// }
-		// const selectedDate = moment(this.selected).startOf('day');
-
-		// return this.allCoursesData.filter((course: any) => {
-		// 	if (course.recurrence) {
-		// 		const rrule = RRule.fromString(course.recurrence);
-		// 		const recurringDates = rrule.all();
-
-		// 		return recurringDates.some(date => moment(date).isSame(selectedDate, 'day'));
-		// 	} else if (course.recurring_dates) {
-
-		// 		const recurringDates = JSON.parse(course.recurring_dates);
-
-		// 		return recurringDates.some((recurringDate: any) => {
-		// 			const eventDate = moment(recurringDate.date_from, 'YYYY-MM-DD');
-		// 			return eventDate.isSame(selectedDate, 'day');
-		// 		});
-		// 	}
-
-		// 	return false;
-		// });
 
 	}
 
@@ -191,6 +292,8 @@ export class DashboardComponent implements OnInit {
 		const selectedDate = moment(this.newDate).startOf('day');
 
 		return items.filter((item: any) => {
+			// console.log(item);
+
 			if (item.recurrence) {
 				const rrule = RRule.fromString(item.recurrence);
 				const recurringDates = rrule.all();
@@ -220,94 +323,66 @@ export class DashboardComponent implements OnInit {
 	}
 
 
+
 	// to get all events from current date
-	getItemsFromTodayToNextYear(items: any[]) {
-		const today = moment().startOf('day');
-		const nextYear = moment().add(1, 'year').startOf('day');
-
-		return items.filter((item: any) => {
-			console.log(item);
-
-			if (item.recurrence) {
-				const rrule = RRule.fromString(item.recurrence);
-				const recurringDates = rrule.between(today.toDate(), nextYear.toDate());
-				return recurringDates.length > 0;
-			} else if (item.recurring_dates) {
-				const recurringDates = JSON.parse(item.recurring_dates);
-				return recurringDates.some((recurringDate: any) => {
-					const itemDate = moment(recurringDate.date_from, 'YYYY-MM-DD').startOf('day');
-					return itemDate.isBetween(today, nextYear, 'day', '[]');
-				});
-			}
-
-			return false;
-		});
-	}
-
-
-	// clubAppointment(items: any[]) {
-	// 	if (!this.selected) {
-	// 		return [];
-	// 	}
-
-	// 	const selectedDate = moment(this.selected).startOf('day');
-	// 	const today = moment().startOf('day');
-
-	// 	return items.filter((item: any) => {
-	// 		if (item.recurrence) {
-	// 			const rrule = RRule.fromString(item.recurrence);
-	// 			const recurringDates = rrule.all();
-
-	// 			return recurringDates.some(date => moment(date).isSameOrAfter(today, 'day') && moment(date).isSame(selectedDate, 'day'));
-	// 		} else if (item.recurring_dates) {
-	// 			const recurringDates = JSON.parse(item.recurring_dates);
-
-	// 			return recurringDates.some((recurringDate: any) => {
-	// 				const itemDate = moment(recurringDate.date_from, 'YYYY-MM-DD').startOf('day');
-	// 				return itemDate.isSameOrAfter(today, 'day') && itemDate.isSame(selectedDate, 'day');
-	// 			});
-	// 		}
-
-	// 		return false;
-	// 	});
-	// }
-
 	clubAppointment(items: any[]) {
-		if (!this.selected) {
-			return [];
-		}
 
-		const selectedDate = moment(this.selected).startOf('day');
+		const startDate = moment().startOf('day'); // Today's date
 		const endDate = moment().add(1, 'year').startOf('day'); // Next year from today
 
 		return items.filter((item: any) => {
 			if (item.recurrence) {
 				const rrule = RRule.fromString(item.recurrence);
-				const recurringDates = rrule.between(selectedDate.toDate(), endDate.toDate());
+				const recurringDates = rrule.between(startDate.toDate(), endDate.toDate());
 
 				return recurringDates.length > 0;
 			} else if (item.recurring_dates) {
 				const recurringDates = JSON.parse(item.recurring_dates);
 				const itemDates = recurringDates.map((recurringDate: any) => moment(recurringDate.date_from, 'YYYY-MM-DD').startOf('day'));
 
-				return itemDates.some((itemDate: any) => itemDate.isSameOrAfter(selectedDate, 'day') && itemDate.isSameOrBefore(endDate, 'day'));
+				return itemDates.some((itemDate: any) => itemDate.isSameOrAfter(startDate, 'day') && itemDate.isSameOrBefore(endDate, 'day'));
 			}
 
-			return false;
+			// Check if the item falls within the desired range
+			const itemDate = moment(item.date_from, 'YYYY-MM-DD').startOf('day');
+			return itemDate.isSameOrAfter(startDate, 'day') && itemDate.isSameOrBefore(endDate, 'day');
 		});
 	}
 
 
 	clubEvents() {
-		return this.getItemsForNewDate(this.approvedEvents);
-
+		return this.clubAppointment(this.approvedEvents);
 	}
 
 	clubCourses() {
-		return this.getItemsForNewDate(this.allCoursesData);
-
+		return this.clubAppointment(this.allCoursesData);
 	}
 
+	// Helper function to get the display name for a given type
+	getDisplayNameForType(type: string): string {
+		switch (type) {
+			case "1":
+				return 'Club Event';
+			case "3":
+				return 'Official Event';
+			case "5":
+				return 'Seminar';
+			default:
+				return 'Course';
+		}
+	}
+
+
+	//for navigating to single event details page
+	navigateToEventDetails(eventId: any, eventDate: any) {
+		const formattedDate:any = this.datePipe.transform(eventDate, 'yyyy-MM-dd');
+		const encodedEventId = encodeURIComponent(eventId);
+		const encodedEventDate = encodeURIComponent(formattedDate);
+		
+		this.router.navigate(['/event-details/', encodedEventId], {
+			queryParams: { date: encodedEventDate }
+		});
+	}
 
 
 

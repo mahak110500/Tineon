@@ -1,0 +1,126 @@
+<div class="container-fluid py-4">
+    <div class="row mt-4">
+        <h1>EVENT - DETAILS</h1>
+
+
+        <!--EVENT DETAILS STARTS -->
+
+        <div class="col-lg-12 mb-lg-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+
+
+                        <div class="col-lg-7">
+                            <div class="border-radius-lg h-100 position-relative">
+                                <img [src]="eventImg" alt="waves"
+                                    style="width: fit-content; max-width: 100%; cursor: pointer;">
+                                <div class="eventInfo-container">
+                                    <h4 style="font-weight: bold;">{{eventInfo?.name}}</h4>
+                                    <div class="eventInfo-desc">
+                                        <p [innerHTML]="eventInfo?.description" style="cursor: pointer;"></p>
+                                    </div>
+                                </div>
+                                <div class="eventInfo-overlay">
+                                    <div class="eventInfo-details">
+                                        <p>Date: {{eventDate}}</p>
+                                        <p>Day: {{eventDay}}</p>
+                                        <p>Time: {{eventTimes}}</p>
+                                        <p>Place: {{eventInfo?.place}}</p>
+                                        <p>Charge: {{eventInfo?.chargeable}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="d-flex flex-column h-100">
+                                <div>
+                                    <h3 class="font-weight-bolder">Organizer</h3>
+                                    <div class="participants-info" (click)="openPopup(approvedUsers?.id)">
+                                        <div class="profile-pic">
+                                            <img src="../../../assets/img/user-default.jpeg" alt="Profile Picture">
+                                        </div>
+                                        <div class="user-info">
+                                            <h4>{{approvedUsers?.firstname}} {{approvedUsers?.lastname}}</h4>
+                                            <span>{{approvedUsers?.email}}</span>
+                                        </div>
+                                        <div class="status">
+                                            <span class="status-user"></span>
+                                            <span>Approved</span>
+                                        </div>
+                                    </div>
+                                </div><br>
+
+                                <div>
+                                    <h3 class="font-weight-bolder">All Participants</h3>
+                                    <div class="participants-info" *ngFor="let data of unapprovedUsers">
+                                        <div (click)="openPopup(data?.id)">
+                                            <div class="profile-pic">
+                                                <img src="../../../assets/img/user-default.jpeg" alt="Profile Picture">
+                                            </div>
+                                            <div class="user-info">
+                                                <h4>{{data?.firstname}} {{data?.lastname}}</h4>
+                                                <span>{{data?.email}}</span>
+                                            </div>
+                                            <div class="status">
+                                                <span class="status-circle"></span>
+                                                <span>Pending</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!-- <div class="col-lg-6">
+                            <div class="d-flex flex-column h-100">
+                                <h5 class="font-weight-bolder"></h5>
+                                <p class="mb-1 pt-2 text-bold">Built by developers</p>
+                                <p class="mb-5">From colors, cards, typography to complex elements, you will
+                                    find the full documentation.</p>
+                                <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto"
+                                    href="javascript:;">
+                                    Read More
+                                    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div> -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--EVENT DETAILS ENDS -->
+
+    </div>
+
+</div>
+
+
+
+
+<!-- popup.component.html -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Popup Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Popup content goes here -->
+                <p>This is the popup content.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>

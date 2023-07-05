@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClubwallComponent } from './clubwall.component';
+import { UserInfoComponent } from './user-info.component';
 
-describe('ClubwallComponent', () => {
-  let component: ClubwallComponent;
-  let fixture: ComponentFixture<ClubwallComponent>;
+describe('UserInfoComponent', () => {
+  let component: UserInfoComponent;
+  let fixture: ComponentFixture<UserInfoComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ClubwallComponent]
+      declarations: [UserInfoComponent]
     });
-    fixture = TestBed.createComponent(ClubwallComponent);
+    fixture = TestBed.createComponent(UserInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -8,7 +8,8 @@ import { ClubwallComponent } from './pages/clubwall/clubwall.component';
 import { CommunityComponent } from './pages/community/community.component';
 import { OrganizerComponent } from './pages/organizer/organizer.component';
 import { ClubwallNewsComponent } from './pages/clubwall/clubwall-news/clubwall-news.component';
-import { EventDetailsComponent } from './pages/event-details/event-details.component';
+import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
+import { CreateEventsComponent } from './pages/events/create-events/create-events.component';
 
 const routes: Routes = [
 	{
@@ -30,6 +31,7 @@ const routes: Routes = [
             { path: 'community', component: CommunityComponent},
             { path: 'organizer', component: OrganizerComponent},
             { path: 'event-details/:id', component: EventDetailsComponent },
+            { path: 'create-event', component: CreateEventsComponent },
 
         ]
     }

@@ -185,13 +185,18 @@
                     <h1>Club Appointment</h1>
                     <div class="eventsList">
                         <ul>
-                            <li *ngFor="let item of eventDates" >
-                                <div (click)="navigateToEventDetails(item.id, item.date)">
-                                    <a><img [src]="item.image" alt="Event/Course Image" style="width: 50px; height: 50px;"></a>
-                                    <p style="color: rgb(118, 121, 121);">{{ item.date }}</p>
-                                    <h2 style="font-size: 14px;">{{ item.name }}</h2>
+                            <li *ngFor="let item of eventDates" style="list-style: none;">
+                                <div class="participants-info" (click)="navigateToEventDetails(item.id, item.date)">
+                                    <div class="profile-pic">
+                                        <a><img [src]="item.image" alt="Event/Course Image"
+                                                style="width: 50px; height: 50px;"></a>
+                                    </div>
+                                    <div class="user-info">
+                                        <p style="color: rgb(118, 121, 121);">{{ formatDate(item.date) }}</p>
+                                        <h2 style="font-size: 14px;">{{ item.name }}</h2>
+                                    </div>
                                 </div>
-                              
+
                             </li>
                             <!-- <li *ngFor="let item of combinedDates">
                                 <p style="color: rgb(118, 121, 121);">{{ item.date }}</p>
@@ -223,8 +228,7 @@
                                             <!-- <div mat-card-avatar class="example-header-image"></div> -->
                                             <mat-card-title>{{data.title}}</mat-card-title>
                                         </mat-card-header>
-                                        <img mat-card-image [src]="data.imageUrls"
-                                            alt="Photo of a Shiba Inu">
+                                        <img mat-card-image [src]="data.imageUrls" alt="Photo of a Shiba Inu">
                                         <mat-card-content>
                                             <p class="text-truncate" [innerHTML]="data.text"></p>
                                         </mat-card-content>

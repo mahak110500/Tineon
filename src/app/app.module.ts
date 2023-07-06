@@ -27,9 +27,11 @@ import { OrganizerComponent } from './pages/organizer/organizer.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ClubwallNewsComponent } from './pages/clubwall/clubwall-news/clubwall-news.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { EventDetailsComponent } from './pages/event-details/event-details.component';
+import { EventDetailsComponent } from './pages/events/event-details/event-details.component';
 import {MatDialogModule} from '@angular/material/dialog';
-import { UserInfoComponent } from './pages/event-details/user-info/user-info.component';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
+import { CreateEventsComponent } from './pages/events/create-events/create-events.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
@@ -48,7 +50,7 @@ import { UserInfoComponent } from './pages/event-details/user-info/user-info.com
   OrganizerComponent,
   ClubwallNewsComponent,
   EventDetailsComponent,
-  UserInfoComponent
+  CreateEventsComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -67,9 +69,11 @@ import { UserInfoComponent } from './pages/event-details/user-info/user-info.com
 		MatMenuModule,
 		FullCalendarModule,
 		MatPaginatorModule,
-		MatDialogModule
+		MatDialogModule,
+		NgSelectModule,
+		ModalModule.forRoot()
 	],
-	providers: [DatePipe],
+	providers: [DatePipe,BsModalService],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

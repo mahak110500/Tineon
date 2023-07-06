@@ -19,7 +19,40 @@
                                     <h4 style="font-weight: bold;">{{eventInfo?.name}}</h4>
                                     <div class="eventInfo-desc">
                                         <p [innerHTML]="eventInfo?.description" style="cursor: pointer;"></p>
+                                    </div><br>
+                                    <div *ngIf="hasEventTaskData" class="card_task">
+                                        <h2 class="task-heading">TASK HEADING</h2><br>
+                                        <div class="event-content">
+                                            <div class="event-title">
+                                                <div class="subtitle">
+                                                    <input type="checkbox">
+                                                    <h3 style="margin-left: 35px;">{{eventInfo?.eventTask?.title}}</h3>
+                                                </div>
+                                                <span>Due Date: 30 March 2023</span>
+                                            </div>
+                                            <p>
+                                                <span [innerHTML]="eventInfo?.eventTask?.description"></span>
+                                            </p>
+                                        </div>
+                                        <div class="all-partcipant-card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Collaborators</h3>
+                                                <div class="participants-info">
+                                                    <div class="profile-pic">
+                                                        <img src="../../../assets/img/user-default.jpeg"
+                                                            alt="Profile Picture">
+                                                    </div>
+                                                    <div class="user-info">
+                                                        <h4> Mango Secretary
+                                                        </h4>
+                                                        <span>test@mail.com</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
+
                                 </div>
                                 <div class="eventInfo-overlay">
                                     <div class="eventInfo-details">
@@ -37,7 +70,7 @@
                             <div class="d-flex flex-column h-100">
                                 <div>
                                     <h3 class="font-weight-bolder">Organizer</h3>
-                                    <div class="participants-info" (click)="openPopup(approvedUsers?.id)">
+                                    <div class="participants-info" (click)="openModal(template,approvedUsers?.id)">
                                         <div class="profile-pic">
                                             <img src="../../../assets/img/user-default.jpeg" alt="Profile Picture">
                                         </div>
@@ -54,8 +87,8 @@
 
                                 <div>
                                     <h3 class="font-weight-bolder">All Participants</h3>
-                                    <div class="participants-info" *ngFor="let data of unapprovedUsers">
-                                        <div (click)="openPopup(data?.id)">
+                                    <ng-container *ngFor="let data of unapprovedUsers">
+                                        <div class="participants-info" (click)="openModal(template,data?.id)">
                                             <div class="profile-pic">
                                                 <img src="../../../assets/img/user-default.jpeg" alt="Profile Picture">
                                             </div>
@@ -67,28 +100,12 @@
                                                 <span class="status-circle"></span>
                                                 <span>Pending</span>
                                             </div>
-                                        </div>
+                                        </div><br><br>
+                                    </ng-container>
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-
-                        <!-- <div class="col-lg-6">
-                            <div class="d-flex flex-column h-100">
-                                <h5 class="font-weight-bolder"></h5>
-                                <p class="mb-1 pt-2 text-bold">Built by developers</p>
-                                <p class="mb-5">From colors, cards, typography to complex elements, you will
-                                    find the full documentation.</p>
-                                <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto"
-                                    href="javascript:;">
-                                    Read More
-                                    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        </div> -->
 
                     </div>
                 </div>
@@ -124,3 +141,27 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL POPUP STARTS -->
+<ng-template #template>
+    <div class="modal-header">
+        <div class="participants-info">
+            <div class="profile-pic">
+                <img src="../../../assets/img/user-default.jpeg" alt="Profile Picture">
+            </div>
+            <div class="user-info">
+                <h4>{{userDetails?.firstname}} {{userDetails?.lastname}}</h4>
+                <span>{{userDetails?.clubName}}</span>
+            </div>
+        </div>
+        <!-- <button type="button" class="close" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button> -->
+    </div>
+    <div class="modal-body">
+        <h3 class="profile-title">personal data</h3>
+        <span class="info-label">City</span>
+        <span class="info-detail">{{profileInfoData?.city}}</span>
+    </div>
+</ng-template>
+<!-- MODAL POPUP ENDS -->

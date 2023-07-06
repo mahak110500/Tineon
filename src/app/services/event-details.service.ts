@@ -40,8 +40,6 @@ export class EventDetailsService implements OnInit {
 		return this.http.get<any>(url, { headers });
 	}
 
-
-	// http://103.127.29.85:9001/api/profile-info/21/141/347589
 	getprofileInfo(memberId: number) {
 		this.token = localStorage.getItem('token');
 		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
@@ -49,6 +47,27 @@ export class EventDetailsService implements OnInit {
 
 		return this.http.get<any>(url, { headers });
 	}
+
+	// http://103.127.29.85:9001/api/getTaskCollaborator/task/14
+	getTaskCollaborator(id: number) {
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+		let url = this.baseUrl + "api/getTaskCollaborator/task/" + id
+
+		return this.http.get<any>(url, { headers });
+	}
+
+	// http://103.127.29.85:9001/api/teamGroupsAndUsers/141
+	getTeamGroupandUsers() {
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+		let url = this.baseUrl + "api/teamGroupsAndUsers/141"
+
+		return this.http.get<any>(url, { headers });
+	}
+
+
+
 
 
 

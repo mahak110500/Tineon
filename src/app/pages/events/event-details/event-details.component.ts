@@ -1,11 +1,10 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DashboardService } from 'src/app/services/dashboard.service';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { UserInfoComponent } from './user-info/user-info.component';
 import { EventDetailsService } from 'src/app/services/event-details.service';
-import { takeWhile } from 'rxjs';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
 	selector: 'app-event-details',
@@ -13,6 +12,8 @@ import { takeWhile } from 'rxjs';
 	styleUrls: ['./event-details.component.css']
 })
 export class EventDetailsComponent implements OnInit {
+	modalRef!: BsModalRef;
+
 	eventId: any;
 	eventInfo: any
 	eventImg: any;
@@ -22,12 +23,16 @@ export class EventDetailsComponent implements OnInit {
 	approvedUsers: any;
 	unapprovedUsers: any;
 	memberId: any;
+	userDetails: any;
+	profileInfoData: any;
+	hasEventTaskData: boolean = false;
 
 	constructor(
 		private dashboardService: DashboardService,
 		private eventSrvice: EventDetailsService,
 		private activeRoute: ActivatedRoute,
-		public dialog: MatDialog
+		private modalService: BsModalService,
+		private authService: AuthService
 	) { }
 
 	ngOnInit(): void {
@@ -43,6 +48,7 @@ export class EventDetailsComponent implements OnInit {
 		});
 
 
+		// get event details
 		this.eventId && this.dashboardService.getEventDetails(this.eventId).subscribe((res: any) => {
 			if (res?.isError == false) {
 				this.eventInfo = res?.result[0]
@@ -57,6 +63,15 @@ export class EventDetailsComponent implements OnInit {
 					}
 				}
 
+				if (Object.keys(this.eventInfo.eventTask).length !== 0) {
+					this.hasEventTaskData = true;
+
+					let taskId = this.eventInfo?.eventTask?.id
+					this.taskCollaborators(taskId);
+				}
+
+
+
 			}
 		})
 
@@ -64,24 +79,22 @@ export class EventDetailsComponent implements OnInit {
 		this.unapprovedParticipants();
 	}
 
-	openPopup(id:any) {
-		// Open the popup using Bootstrap's modal method
-		// $('#myModal').modal('show');
-	  }
+	openModal(template: TemplateRef<any>, id: any) {
+		this.modalRef = this.modalService.show(template);
 
-
-	opeDialog(id: any) {
 		this.clubInfo();
 		this.getUserDetails(id);
-
-		this.dialog.open(UserInfoComponent);
 	}
 
+
 	getUserDetails(id: number) {
+		this.authService.setLoader(true);
+
 		this.eventSrvice.getUserDetails(id).subscribe((res: any) => {
-			console.log(res);
+			this.authService.setLoader(false);
+
 			this.memberId = res[0]?.member_id;
-			// console.log(this.memberId );
+			this.userDetails = res[0];
 
 			this.memberInfo();
 			this.profileInfo();
@@ -91,42 +104,57 @@ export class EventDetailsComponent implements OnInit {
 	}
 
 	clubInfo() {
+		this.authService.setLoader(true);
+
 		this.eventSrvice.getClubInfo().subscribe((res: any) => {
-			// console.log(res);
+			this.authService.setLoader(false);
 
 		})
 	}
 
 	memberInfo() {
+		this.authService.setLoader(true);
 		const member_id = this.memberId;
 
 		this.eventSrvice.getmemberInfo(member_id).subscribe((res: any) => {
+			this.authService.setLoader(false);
 			console.log(res);
 		})
 
 	}
 
-	profileInfo(){
+	profileInfo() {
+		this.authService.setLoader(true);
+
 		const member_id = this.memberId;
-		console.log(this.memberId);
-
 		this.eventSrvice.getprofileInfo(member_id).subscribe((res: any) => {
-			console.log(res);
+			this.authService.setLoader(false);
+			this.profileInfoData = res;
 		})
-
 	}
 
+	taskCollaborators(taskId: any) {
+		this.eventSrvice.getTaskCollaborator(taskId).subscribe((res: any) => {
+			console.log(res);
+
+		})
+	}
 
 
 	approvedParticipants() {
+		this.authService.setLoader(true);
+
 		this.dashboardService.getApprovedParticipants(this.eventId).subscribe((res: any) => {
-			// console.log(res);
+			this.authService.setLoader(false);
 			this.approvedUsers = res[0].users
 		})
 	}
 
 	unapprovedParticipants() {
+		this.authService.setLoader(true);
+
 		this.dashboardService.getUnapprovedParticipants(this.eventId).subscribe((res: any) => {
+			this.authService.setLoader(false);
 			this.unapprovedUsers = res;
 
 		})

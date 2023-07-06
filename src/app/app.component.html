@@ -1,3 +1,8 @@
-<!-- <app-dashboard></app-dashboard> -->
-<!-- <app-layout></app-layout> -->
 <router-outlet></router-outlet>
+<div *ngIf="authService.showLoader">
+    <div class="overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+        </div>
+    </div>
+</div>

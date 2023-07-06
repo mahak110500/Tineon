@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
 
 	eventDates: { name: string; date: string; image: string; id: number }[] = [];
 
-	courseDates: { name: string, date: string }[] = [];
+	courseDates: { name: string; date: string; image: string; id: number }[] = [];
 
 
 
@@ -84,6 +84,12 @@ export class DashboardComponent implements OnInit {
 		this.newDate = new Date(this.newDate.getTime() + 24 * 60 * 60 * 1000);
 	}
 
+	formatDate(dateString: string): any {
+		const date = new Date(dateString); // Convert the string to a Date object
+		return this.datePipe.transform(date, 'd. MMMM yyyy');
+	}
+
+
 	currentClubNews() {
 		this.dashboardService.getCurrentClubNews().subscribe((res: any) => {
 			this.clubNewsData = res;
@@ -108,7 +114,8 @@ export class DashboardComponent implements OnInit {
 			if (res?.isError == false) {
 				this.allCoursesData = res.result
 				// console.log(res);
-				this.processCourses();
+				// this.processCourses();
+				this.filterCourses();
 				this.combineDates();
 			}
 		})
@@ -189,40 +196,110 @@ export class DashboardComponent implements OnInit {
 	}
 
 
-	processCourses(): void {
+	filteredCourses!: any[];
+	filterCourses(): void {
 		const today = new Date();
+		const futureDate = new Date('2050-12-31'); // Adjust this as per your requirement
 
-		this.allCoursesData.forEach((course: any) => {
-			if (course.recurrence === null) {
-				// Process courses with recurring_dates
-				const recurringDates = JSON.parse(course.recurring_dates);
-				recurringDates.forEach((date: any) => {
-					const courseDate = new Date(date.date_from);
-					if (courseDate >= today) {
-						this.courseDates.push({ name: course.name, date: `${date.date_from} ${date.start_time} - ${date.end_time}` });
-					}
-				});
-			} else {
-				// Process courses with recurrence string
+		this.filteredCourses = this.allCoursesData.filter((course: any) => {
+			// Check if the course starts from today or in the future
+			const startDate = new Date(course.date_from);
+			if (startDate > futureDate) {
+				return false;
+			}
+
+			if (course.recurrence) {
+				// Parse recurrence using RRule library
 				const rule = RRule.fromString(course.recurrence);
-				const recurringDates = rule.all();
+				const recurringDates = rule.between(today, futureDate);
 
 				recurringDates.forEach(date => {
+					const pictureVideo = JSON.parse(course.picture_video);
+
 					if (date >= today) {
-						this.courseDates.push({ name: course.name, date: date.toISOString() });
+						this.courseDates.push({
+							name: course.name,
+							date: formatDate(date),
+							image: pictureVideo[0],
+							id: course.id
+						});
 					}
 				});
+
+				return recurringDates.length > 0;
+			} else if (course.recurring_dates) {
+				// Parse recurring_dates JSON
+				const recurringDates = JSON.parse(course.recurring_dates);
+				// const courseDates = recurringDates.map((item: any) => new Date(item.date_from));
+				recurringDates.forEach((date: any) => {
+					const eventDate = new Date(date.date_from);
+					const pictureVideo = JSON.parse(course.picture_video);
+					if (eventDate >= today) {
+						this.courseDates.push({
+							name: course.name,
+							date: date.date_from,
+							image: pictureVideo[0],
+							id: course.id
+						});
+					}
+				});
+
 			}
+
+			return false;
 		});
 
-		this.courseDates.sort((a, b) => {
-			const date1 = this.parseDate(a.date);
-			const date2 = this.parseDate(b.date);
+		// this.filteredCourses.sort((a, b) => {
+		// 	const date1 = this.parseDate(a.date);
+		// 	const date2 = this.parseDate(b.date);
 
-			return this.compareDates(date1, date2);
-		});
+		// 	return this.compareDates(date1, date2);
+		// });
+		console.log(this.filteredCourses);
+
+
 
 	}
+
+
+
+
+	// processCourses(): void {
+	// 	const today = new Date();
+	// 	console.log(this.allCoursesData);
+
+
+	// 	this.allCoursesData.forEach((course: any) => {
+	// 		if (course.recurrence === null) {
+	// 			// Process courses with recurring_dates
+	// 			const recurringDates = JSON.parse(course.recurring_dates);
+	// 			recurringDates.forEach((date: any) => {
+	// 				const courseDate = new Date(date.date_from);
+	// 				if (courseDate >= today) {
+	// 					this.courseDates.push({ name: course.name, date: `${date.date_from} ${date.start_time} - ${date.end_time}` });
+	// 				}
+	// 			});
+	// 		} else {
+	// 			// Process courses with recurrence string
+	// 			const rule = RRule.fromString(course.recurrence);
+	// 			const recurringDates = rule.all();
+
+	// 			recurringDates.forEach(date => {
+	// 				if (date >= today) {
+	// 					this.courseDates.push({ name: course.name, date: date.toISOString() });
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+
+	// 	this.courseDates.sort((a, b) => {
+	// 		const date1 = this.parseDate(a.date);
+	// 		const date2 = this.parseDate(b.date);
+
+	// 		return this.compareDates(date1, date2);
+	// 	});
+
+	// }
 
 	combinedDates: { name: string, date: string }[] = [];
 
@@ -375,10 +452,10 @@ export class DashboardComponent implements OnInit {
 
 	//for navigating to single event details page
 	navigateToEventDetails(eventId: any, eventDate: any) {
-		const formattedDate:any = this.datePipe.transform(eventDate, 'yyyy-MM-dd');
+		const formattedDate: any = this.datePipe.transform(eventDate, 'yyyy-MM-dd');
 		const encodedEventId = encodeURIComponent(eventId);
 		const encodedEventDate = encodeURIComponent(formattedDate);
-		
+
 		this.router.navigate(['/event-details/', encodedEventId], {
 			queryParams: { date: encodedEventDate }
 		});

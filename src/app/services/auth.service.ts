@@ -6,19 +6,21 @@ import { User } from '../models/user.model';
 
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class AuthService implements OnInit {
 	user = new ReplaySubject<Object>(1);
 	tokenExpirationTimer: any;
+	private isLoading: boolean = false;
+	public baseUrl = "http://103.127.29.85:9001/";
+
 
 	constructor(private http: HttpClient, private router: Router) { }
 
 	ngOnInit(): void {
 
 	}
-	public baseUrl = "http://103.127.29.85:9001/";
-
+	
 	//used to set the loader
 	loader: Boolean = false;
 	setLoader(value: Boolean) {
@@ -134,7 +136,7 @@ export class AuthService implements OnInit {
 			token,
 			new Date(expirationDuration)
 		);
-		
+
 		this.user.next(user); //storing data in user subject
 		localStorage.setItem('userData', JSON.stringify(user));
 		this.autoLogout(expirationDuration);

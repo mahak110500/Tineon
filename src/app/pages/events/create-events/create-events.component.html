@@ -10,7 +10,6 @@
                 <form class="user" [formGroup]="eventForm" (ngSubmit)="onSubmit()">
                     <div class="row">
                         <div class="col-md-12">
-
                             <div class="main-block d-flex">
                                 <div class="first-block">
                                     <div class="form-group">
@@ -76,25 +75,61 @@
 
                                     <div class="form-group">
                                         <label>Room</label>
-                                        <div class="input-box">
-                                            <ng-select [items]="rooms" bindLabel="name"
-                                                formControlName="room">
-                                            </ng-select>
-                                        </div>
-                                        <span class="danger" *ngIf="isSubmitted && formControls['room'].errors">
+                                        <ng-select [items]="rooms" bindLabel="name" bindValue="id"
+                                            formControlName="room" (change)="onRoomSelected($event)">
+                                        </ng-select>
+                                    </div>
+                                    <div class="form-group" *ngIf="formControls.room.value">
+                                        <label>Allowed Persons</label>
+                                        <input type="text" class="form-control" placeholder="Allowed Persons"
+                                            name="allowedPerson" formControlName="allowedPerson"
+                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['allowedPerson'].errors }">
+                                        <span class="danger"
+                                            *ngIf="isSubmitted && formControls['allowedPerson'].errors">
                                             This is required </span>
-                                    </div><br>
+                                    </div>
+                                    <div class="room-info" *ngIf="formControls.room.value">
+                                        <div class="room-info-box">
+                                            <p>Price:- €{{roomDetails.price || 0}}</p>
+                                            <p>Start Date:- {{roomDetails.active_from | date: 'd. MMMM yyyy'}} </p>
+                                            <p>End Date:- {{roomDetails.active_to | date: 'd.MMMM yyyy' }}</p>
+                                            <p>No. of Persons:- {{roomDetails.no_of_persons ||0 }}</p>
+                                        </div>
+                                    </div>
+                                    <div #calendar></div>
+
+
 
                                 </div>
 
                                 <div class="second-block">
-                                    <div class="form-group"> 
+
+                                    <div class="form-group">
                                         <label>Visibility</label>
-                                        <div class="input-box">
-                                            <ng-select [items]="visibilityOptions" bindLabel="name"
-                                                formControlName="visibility"  (change)="onVisibilityChange()">
-                                            </ng-select>
-                                        </div>
+                                        <ng-select [items]="visibilityOptions" bindLabel="name"
+                                            formControlName="visibility" (change)="onVisibilityChange()"
+                                            class="custom-select">
+                                        </ng-select>
+                                    </div>
+
+                                    <div class="form-group" *ngIf="selectedCheckbox && selectedCheckbox.id === 1">
+                                        <label>Participant</label>
+                                        <ng-select [items]="users" bindLabel="firstname" formControlName="participant"
+                                            class="custom-select">
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{ item.firstname }} {{ item.lastname }}
+                                            </ng-template>
+                                            <ng-template ng-option-tmp let-item="item">
+                                                {{ item.firstname }} {{ item.lastname }}
+                                            </ng-template>
+                                        </ng-select>
+                                    </div>
+
+                                    <div class="form-group" *ngIf="selectedCheckbox && selectedCheckbox.id === 3">
+                                        <label>Groups</label>
+                                        <ng-select [items]="groups" bindLabel="name" formControlName="participant"
+                                            class="custom-select">
+                                        </ng-select>
                                     </div>
 
                                     <div class="form-group">
@@ -123,6 +158,117 @@
                                             This is required
                                         </span>
                                     </div><br>
+
+                                    <div class="form-group">
+                                        <label>Add Attachment</label>
+                                        <input type="file" class="form-control" name="file"
+                                            (change)="onFileChange($event)" formControlName="file"><br>
+                                        <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+                                        <div *ngIf="uploadedFileName" class="text-success">{{ uploadedFileName }}</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Add Attachment</label>
+                                        <input type="file" class="form-control" name="file"
+                                            (change)="onFileChange($event)" formControlName="file"><br>
+                                        <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
+                                        <div *ngIf="uploadedFileName" class="text-success">{{ uploadedFileName }}</div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="showOptions">
+                                            <div class="form-group">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="showGuests"
+                                                        formControlName="showGuests" (change)="updateShowOptions()">
+                                                    <label class="form-check-label">Show Guests</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="showCosts"
+                                                        formControlName="showCosts" (change)="updateShowOptions()">
+                                                    <label class="form-check-label"> Chargeable</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="showTasks"
+                                                        formControlName="showTasks" (change)="updateShowOptions()">
+                                                    <label class="form-check-label"> Tasks</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group" *ngIf="showCostsSelected">
+                                        <label>Event Price</label>
+                                        <input type="text" class="form-control" name="eventPrice"
+                                            formControlName="eventPrice" placeholder="event price">
+                                    </div>
+
+                                    <div class="showTasks" *ngIf="showTasksSelected">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" class="form-control" placeholder="Title"
+                                                name="tasksTitle" formControlName="tasksTitle"
+                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['tasksTitle'].errors }">
+                                            <span class="danger"
+                                                *ngIf="isSubmitted && formControls['tasksTitle'].errors">
+                                                This is required
+                                            </span>
+                                        </div><br>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="form-control" placeholder="Enter Text Here.."
+                                                name="tasksDescription" formControlName="tasksDescription"
+                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['tasksDescription'].errors }"
+                                                style="height:90px"></textarea>
+                                            <span class="danger"
+                                                *ngIf="isSubmitted && formControls['tasksDescription'].errors">
+                                                This is required
+                                            </span>
+                                            <div class="form-group">
+                                                <label>Collaborators:</label>
+                                                <ng-select [items]="collaboratorOptions" bindLabel="name"
+                                                    formControlName="tasksCollaborators"
+                                                    (change)="onCollaboratorsChange()" class="custom-select">
+                                                </ng-select>
+                                            </div>
+                                            <div class="form-group"
+                                                *ngIf="selectedCollaborator && selectedCollaborator.id === 1">
+                                                <label>Participant</label>
+                                                <ng-select [items]="users" bindLabel="firstname"
+                                                    formControlName="participant" class="custom-select"
+                                                    placeholder="select">
+                                                    <ng-template ng-label-tmp let-item="item">
+                                                        {{ item.firstname }} {{ item.lastname }}
+                                                    </ng-template>
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        {{ item.firstname }} {{ item.lastname }}
+                                                    </ng-template>
+                                                </ng-select>
+                                            </div>
+                                            <div class="form-group"
+                                                *ngIf="selectedCollaborator && selectedCollaborator.id === 2">
+                                                <label>Groups</label>
+                                                <ng-select [items]="groups" bindLabel="name"
+                                                    formControlName="participant" class="custom-select">
+                                                </ng-select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>End Date</label>
+                                                <input type="date" class="form-control" placeholder="dd/mm/yyyy"
+                                                    name="location" formControlName="tasksEndDate"
+                                                    [ngClass]="{ 'is-invalid': isSubmitted && formControls['tasksEndDate'].errors }">
+                                                <span class="danger"
+                                                    *ngIf="isSubmitted && formControls['tasksEndDate'].errors">
+                                                    This is required </span>
+                                            </div><br>
+
+                                        </div><br>
+
+
+                                    </div>
+
 
 
                                 </div>

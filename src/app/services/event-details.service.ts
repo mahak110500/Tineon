@@ -67,6 +67,27 @@ export class EventDetailsService implements OnInit {
 	}
 
 
+	getRoomsbyId(id:any){
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+		let url = this.baseUrl + "api/getRoomsById/" + id
+
+		return this.http.get<any>(url, { headers });
+
+	}
+
+	// http://103.127.29.85:9001/api/createEvent
+	createEvent(data:any){
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+
+		return this.http.post(this.baseUrl + 'api/createEvent', data, { headers });
+
+	}
+
+
+
+
 
 
 

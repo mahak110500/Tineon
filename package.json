@@ -24,6 +24,7 @@
     "@fullcalendar/core": "^6.1.8",
     "@fullcalendar/daygrid": "^6.1.8",
     "@fullcalendar/interaction": "^6.1.8",
+    "@fullcalendar/moment": "^6.1.8",
     "@fullcalendar/timegrid": "^6.1.8",
     "@ng-select/ng-select": "^11.0.0",
     "angular-font-awesome": "^3.1.2",

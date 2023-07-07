@@ -31,3 +31,24 @@
 .ng-dropdown-panel .scroll-host{
     background-color: beige;
 }
+
+.custom-select .ng-dropdown-panel {
+    position: fixed;
+    z-index: 9999;
+}
+
+.button-one{
+    margin-top: 100px;
+    margin-left: 20px;
+}
+
+.showOptions{
+    display: flex;
+}
+
+.room-info-box{
+    border: 1px solid  #bbe2f1;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #bbe2f1;
+}

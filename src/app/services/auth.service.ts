@@ -20,7 +20,7 @@ export class AuthService implements OnInit {
 	ngOnInit(): void {
 
 	}
-	
+
 	//used to set the loader
 	loader: Boolean = false;
 	setLoader(value: Boolean) {
@@ -142,7 +142,28 @@ export class AuthService implements OnInit {
 		this.autoLogout(expirationDuration);
 	}
 
+	/**
+		* Function is usesd for return uniqe array
+		* @author MangoIt Solutions
+		* @param {array}
+		* @returns {array} uniqe array
+		*/
 
+	uniqueData(uniqueData: any) {
+		return uniqueData.filter((value :any, index:any, array:any) => array.indexOf(value) === index);
+	}
+
+	/**
+	* Function is usesd for return uniqe object array
+	* @author MangoIt Solutions
+	* @param {object array}
+	* @returns {object array} uniqe object array
+	*/
+	uniqueObjData(uniqueData: any, key: any) {
+		return [...new Map(uniqueData.map((item:any) => [item[key], item])).values()];
+	}
+
+	
 
 
 

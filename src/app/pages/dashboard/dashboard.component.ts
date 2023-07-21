@@ -45,6 +45,11 @@ export class DashboardComponent implements OnInit {
 	approvedEvents: any = [];
 	allCoursesData: any = [];
 	clubNewsData: any = [];
+	allowAdvertisment:any;
+	bannerData:any= [];
+    eventData:any= [];
+    courseData:any= [];
+	
 
 	eventDates: { name: string; date: string; image: string; id: number }[] = [];
 
@@ -60,6 +65,10 @@ export class DashboardComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
+        this.allowAdvertisment = localStorage.getItem('allowAdvertis')
+		console.log(this.allowAdvertisment);
+		
+
 
 		this.allEvents();
 		this.allCourses();

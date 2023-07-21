@@ -32,7 +32,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { CreateEventsComponent } from './pages/events/create-events/create-events.component';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import { ClubAppointmentsComponent } from './pages/club-appointments/club-appointments.component';
 
 
 
@@ -51,6 +52,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   ClubwallNewsComponent,
   EventDetailsComponent,
   CreateEventsComponent,
+  ClubAppointmentsComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -71,7 +73,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
 		MatPaginatorModule,
 		MatDialogModule,
 		NgSelectModule,
-		ModalModule.forRoot()
+		ModalModule.forRoot(),
+        NgxMaterialTimepickerModule
+
 	],
 	providers: [DatePipe,BsModalService],
 	bootstrap: [AppComponent]

@@ -182,7 +182,7 @@
         <div class="col-lg-4">
             <div class="card h-100 p-3">
                 <div class="overflow-hidden">
-                    <h1>Club Appointment</h1>
+                    <!-- <h1>Club Appointment</h1>
                     <div class="eventsList">
                         <ul>
                             <li *ngFor="let item of eventDates" style="list-style: none;">
@@ -198,11 +198,20 @@
                                 </div>
 
                             </li>
-                            <!-- <li *ngFor="let item of combinedDates">
+                            <li *ngFor="let item of combinedDates">
                                 <p style="color: rgb(118, 121, 121);">{{ item.date }}</p>
                                 <h2 style="font-size: 16px;">{{ item.name }}</h2>
-                            </li> -->
+                            </li>
                         </ul>
+                    </div> -->
+
+                    <div class="col-md-3 appointment_widget">
+                        <!-- <span *ngIf="allowAdvertisment == 0">
+                            <app-club-appointments *ngIf="bannerData && eventData && courseData" [bannerData]="bannerData" [eventData]="eventData" [courseData]="courseData"></app-club-appointments>
+                        </span>
+                        <span *ngIf="allowAdvertisment == 1">
+                            <app-club-appointments *ngIf="eventData && courseData" [bannerData]="bannerData" [eventData]="eventData" [courseData]="courseData"></app-club-appointments>
+                        </span>  -->
                     </div>
 
                 </div>

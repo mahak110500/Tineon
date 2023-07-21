@@ -15,9 +15,9 @@
                                     <div class="form-group">
                                         <label>Title</label>
                                         <input type="text" class="form-control" placeholder="Add a Event-Title"
-                                            name="title" formControlName="title"
-                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['title'].errors }">
-                                        <span class="danger" *ngIf="isSubmitted && formControls['title'].errors">
+                                            name="name" formControlName="name"
+                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['name'].errors }">
+                                        <span class="danger" *ngIf="isSubmitted && formControls['name'].errors">
                                             This is required </span>
                                     </div><br>
 
@@ -25,53 +25,281 @@
                                     <div class="form-group">
                                         <label>Location</label>
                                         <input type="text" class="form-control" placeholder="Add a Event-Location"
-                                            name="location" formControlName="location"
-                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['location'].errors }">
-                                        <span class="danger" *ngIf="isSubmitted && formControls['location'].errors">
+                                            name="place" formControlName="place"
+                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['place'].errors }">
+                                        <span class="danger" *ngIf="isSubmitted && formControls['place'].errors">
                                             This is required </span>
                                     </div><br>
-
 
                                     <div class="form-group">
                                         <label>Type</label>
-                                        <input type="text" class="form-control" placeholder="Event-Type" name="type"
-                                            formControlName="type"
-                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['type'].errors }">
-                                        <span class="danger" *ngIf="isSubmitted && formControls['type'].errors">
-                                            This is required </span>
+                                        <ng-select [items]="eventTypeOptions" bindLabel="name" formControlName="type"
+                                            class="custom-select">
+                                        </ng-select>
                                     </div><br>
 
-                                    <div class="dateTime">
+                                    <!-- <div class="dateTime">
                                         <div class="form-group">
                                             <label>Start-Date</label>
-                                            <input type="text" class="form-control" name="startDate"
-                                                formControlName="startDate"
-                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['startDate'].errors }">
+                                            <input type="date" class="form-control" name="date_from"
+                                                formControlName="date_from"
+                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['date_from'].errors }">
                                             <span class="danger"
-                                                *ngIf="isSubmitted && formControls['startDate'].errors">
+                                                *ngIf="isSubmitted && formControls['date_from'].errors">
                                                 This is required </span>
                                         </div>&nbsp;&nbsp;
 
                                         <div class="form-group">
                                             <label>Start-Time</label>
-                                            <input type="text" class="form-control" placeholder="Time" name="startTime"
-                                                formControlName="startTime"
-                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['startTime'].errors }">
+                                            <input type="text" class="form-control" placeholder="Time" name="start_time"
+                                                formControlName="start_time"
+                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['start_time'].errors }">
                                             <span class="danger"
-                                                *ngIf="isSubmitted && formControls['startTime'].errors">
+                                                *ngIf="isSubmitted && formControls['start_time'].errors">
                                                 This is required </span>
                                         </div>&nbsp;&nbsp;
 
                                         <div class="form-group">
                                             <label>End-Time</label>
-                                            <input type="text" class="form-control" placeholder="Time" name="endTime"
-                                                formControlName="endTime"
-                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['endTime'].errors }">
-                                            <span class="danger" *ngIf="isSubmitted && formControls['endTime'].errors">
+                                            <input type="text" class="form-control" placeholder="Time" name="end_time"
+                                                formControlName="end_time"
+                                                [ngClass]="{ 'is-invalid': isSubmitted && formControls['end_time'].errors }">
+                                            <span class="danger" *ngIf="isSubmitted && formControls['end_time'].errors">
                                                 This is required </span>
                                         </div>
 
+                                    </div> -->
+
+                                    <div class="weekdays-section" formArrayName="eventDate">
+                                        <div class="weekdays-main"
+                                            *ngFor="let item of eventForm.controls.eventDate['controls']; let i = index;"
+                                            [formGroupName]="i">
+                                            <div class="group_input row">
+
+                                                <div class="event_field col-md-4">
+                                                    <label>Start - Date</label>
+                                                    <input type="date" id="date_start" [min]="getToday()"
+                                                        formControlName="date_from" (change)="dateSubmit()">
+                                                    <label class="text-danger"
+                                                        *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.date_from.touched">
+                                                        <label class="text-danger"
+                                                            *ngIf="eventForm.controls.eventDate.controls[i].controls.date_from.errors?.required">This
+                                                            is required</label>
+                                                    </label>
+                                                </div>
+
+                                                <div class="event_field col-md-3">
+                                                    <label>Start - time</label>
+                                                    <input [ngxTimepicker]="pickerStart" [format]="24" readonly
+                                                        placeholder="Time" formControlName="start_time"
+                                                        (change)="dateSubmit()" (change)="compareTwoTimes(i)">
+
+                                                    <ngx-material-timepicker #pickerStart (timeSet)="dateSubmit()"
+                                                        [minutesGap]="5"
+                                                        (closed)="compareTwoTimes(i)"></ngx-material-timepicker>
+                                                    <label class="text-danger"
+                                                        *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.start_time.touched">
+                                                        <label class="text-danger"
+                                                            *ngIf="eventForm.controls.eventDate.controls[i].controls.start_time.errors?.required">This
+                                                            is required</label>
+                                                    </label>
+                                                </div>
+
+                                                <div class="event_field col-md-3">
+                                                    <label>End - time</label>
+                                                    <input [ngxTimepicker]="pickerEnd" [format]="24" readonly
+                                                        placeholder="Time" formControlName="end_time"
+                                                        (change)="compareTwoTimes(i)" (change)="dateSubmit()">
+                                                    <ngx-material-timepicker #pickerEnd (closed)="compareTwoTimes(i)"
+                                                        (timeSet)="dateSubmit()"
+                                                        [minutesGap]="5"></ngx-material-timepicker>
+                                                    <label class="text-danger"
+                                                        *ngIf="eventSubmitted || eventForm.controls.eventDate.controls[i].controls.end_time.touched">
+                                                        <label class="text-danger"
+                                                            *ngIf="eventForm.controls.eventDate.controls[i].controls.end_time.errors?.required">This
+                                                            is required</label>
+                                                    </label>
+                                                    <label *ngIf="errorTime.isError == true && errorTime.index == i"
+                                                        class="text-danger">This is invalid</label>
+                                                </div>
+
+                                                <div class="event_field col-md-2">
+                                                    <div class="weekdays-item" *ngIf="i > 0">
+                                                        <div class="inst-add-btn">
+                                                            <a (click)="removeAvailableTimes(i)">
+                                                                <img onContextMenu="return false;"
+                                                                    src="../../../../assets/img/removeIcon.png"
+                                                                    style="width: 40px;" alt="" loading="lazy">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="weekdays-item" *ngIf="i == 0">
+                                                        <div class="inst-add-btn">
+                                                            <a (click)="addAvailableTimes()">
+                                                                <img onContextMenu="return false;"
+                                                                    src="../../../../assets/img/Plus.svg"
+                                                                    style="width: 40px;" alt="" loading="lazy">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="group_input">
+                                        <div class="news-dropdown" *ngIf="recurrenceDropdownField">
+                                            <div class="multi_dropdown_main">
+                                                <label>Recurrence</label>
+                                                <ng-select [items]="recurrenceDropdownList" bindLabel="item_text"
+                                                    formControlName="recurrence" class="custom-select"
+                                                    (ngModelChange)="onRecurrenceSelect($event)"
+                                                    (onDeSelect)="onRecurrenceDeSelect($event)" (click)="endRepeat()">
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div *ngIf="customReccDateError.isError == true" class="text-danger">{{ customReccDateError.errorMessage }}</div> -->
+                                    <div class="group_input row"
+                                        *ngIf="recurrenceDropdownField && recurrenceSelected != 0 && recurrenceSelected != null">
+                                        <div class="event_field col-md-6">
+                                            <label>End - date</label>
+
+                                            <input type="date" formControlName="date_to" [min]="getEndDate()"
+                                                (change)="endRepeat()" (ngModelChange)="onRecurrence()">
+                                            <label class="text-danger"
+                                                *ngIf="eventSubmitted && eventForm.controls['date_to'].errors">This is
+                                                required</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="group_input" *ngIf="isCustom">
+                                        <div class="news-dropdown">
+                                            <button type="button" style="display: none;" id="showPopup" class="disabled"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">ABCD</button>
+                                            <div class="modal fade change_pass_section recurrence_model"
+                                                id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                                Recurrence</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" (click)="closeModal()"
+                                                                aria-label="Close">
+                                                                <i class="nc-icon nc-simple-remove"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="group_input recurrence_main">
+                                                            <div class="news-dropdown">
+                                                                <div class="multi_dropdown_main">
+                                                                    <label>Recurrence</label>
+                                                                    <ng-select [items]="customRecurrenceDropdownList"
+                                                                        bindLabel="item_text"
+                                                                        formControlName="customRecurrence"
+                                                                        class="custom-select"
+                                                                        (ngModelChange)="onCustomRecurrenceSelect($event)">
+                                                                    </ng-select>
+                                                                    <label class="text-danger"
+                                                                        *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">This
+                                                                        is required</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div id="custom_recurrence_main">
+                                                                <div class="custom_recurrence_inner">
+                                                                    <div class="repeat_daily"
+                                                                        *ngIf="customRecurrenceTypeSelected == 1">
+                                                                        <span class="custom_repeat_inner">
+                                                                            EVERY
+                                                                            <input type="number"
+                                                                                class="custom_recurrence_daily"
+                                                                                name="interval" min="1" max="99"
+                                                                                (change)="checkOnlyNaturalNumber($event)"
+                                                                                (keyup)="checkOnlyNaturalNumber($event)">
+                                                                            DAY
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="repeat_weekly"
+                                                                        *ngIf="customRecurrenceTypeSelected == 2">
+                                                                        <span class="custom_repeat_inner">
+                                                                            EVERY
+                                                                            <input type="number"
+                                                                                class="custom_recurrence_weekly"
+                                                                                name="interval" min="1" max="99"
+                                                                                (change)="checkOnlyNaturalNumber($event)"
+                                                                                (keyup)="checkOnlyNaturalNumber($event)">
+                                                                            WEEK
+                                                                        </span>
+                                                                        <div class="group_input">
+                                                                            <div class="news-dropdown">
+                                                                                <div class="multi_dropdown_main">
+                                                                                    <label>RECURRENCE</label>
+
+                                                                                    <ng-select
+                                                                                        [items]="weekDayDropdownList"
+                                                                                        bindLabel="description"
+                                                                                        formControlName="recc_week"
+                                                                                        class="custom-select"
+                                                                                        (ngModelChange)="onWeekDaySelect($event)"
+                                                                                        (onDeSelect)="onWeekDayDeSelect($event)">
+                                                                                    </ng-select>
+
+
+                                                                                    <label class="text-danger"
+                                                                                        *ngIf="eventSubmitted && eventForm.controls['visibility'].errors">This
+                                                                                        is required</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="repeat_monthly"
+                                                                        *ngIf="customRecurrenceTypeSelected == 3">
+                                                                        <span class="custom_repeat_inner">
+                                                                            EVERY<input type="number"
+                                                                                class="custom_recurrence_monthly"
+                                                                                name="interval" min="1" max="99"
+                                                                                (change)="checkOnlyNaturalNumber($event)"
+                                                                                (keyup)="checkOnlyNaturalNumber($event)">
+                                                                            MONTH
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="repeat_yearly"
+                                                                        *ngIf="customRecurrenceTypeSelected == 4">
+                                                                        <span class="custom_repeat_inner">
+                                                                            EVERY <input type="number"
+                                                                                class="custom_recurrence_yearly"
+                                                                                name="interval" min="1" max="99"
+                                                                                (change)="checkOnlyNaturalNumber($event)"
+                                                                                (keyup)="checkOnlyNaturalNumber($event)">
+                                                                            YEAR
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" *ngIf="this.naturalNumber == true"
+                                                                disabled class="btn btn-secondary change_btn">
+                                                                OK
+                                                            </button>
+                                                            <button type="button" *ngIf="this.naturalNumber == false"
+                                                                class="btn btn-secondary change_btn"
+                                                                (click)="customReccModalClose()">
+                                                                OK
+                                                            </button>
+                                                            <button type="button" class="btn btn-secondary change_btn"
+                                                                data-bs-dismiss="modal" (click)="closeModal()">
+                                                                cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <div class="form-group">
                                         <label>Room</label>
@@ -82,10 +310,10 @@
                                     <div class="form-group" *ngIf="formControls.room.value">
                                         <label>Allowed Persons</label>
                                         <input type="text" class="form-control" placeholder="Allowed Persons"
-                                            name="allowedPerson" formControlName="allowedPerson"
-                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['allowedPerson'].errors }">
+                                            name="allowed_persons" formControlName="allowed_persons"
+                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['allowed_persons'].errors }">
                                         <span class="danger"
-                                            *ngIf="isSubmitted && formControls['allowedPerson'].errors">
+                                            *ngIf="isSubmitted && formControls['allowed_persons'].errors">
                                             This is required </span>
                                     </div>
                                     <div class="room-info" *ngIf="formControls.room.value">
@@ -96,15 +324,14 @@
                                             <p>No. of Persons:- {{roomDetails.no_of_persons ||0 }}</p>
                                         </div>
                                     </div>
+
                                     <div #calendar></div>
-
-
 
                                 </div>
 
                                 <div class="second-block">
 
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <label>Visibility</label>
                                         <ng-select [items]="visibilityOptions" bindLabel="name"
                                             formControlName="visibility" (change)="onVisibilityChange()"
@@ -135,10 +362,10 @@
                                     <div class="form-group">
                                         <label>Add a Picture</label><br>
                                         <input type="file" class="form-control-file" name="image"
-                                            formControlName="image"
-                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['image'].errors }"
+                                            formControlName="add_image"
+                                            [ngClass]="{ 'is-invalid': isSubmitted && formControls['add_image'].errors }"
                                             (change)="onImageChange($event)">
-                                        <span class="danger" *ngIf="isSubmitted && formControls['image'].errors">
+                                        <span class="danger" *ngIf="isSubmitted && formControls['add_image'].errors">
                                             This is required
                                         </span>
                                     </div>
@@ -162,7 +389,7 @@
                                     <div class="form-group">
                                         <label>Add Attachment</label>
                                         <input type="file" class="form-control" name="file"
-                                            (change)="onFileChange($event)" formControlName="file"><br>
+                                            (change)="onFileChange($event)" formControlName=""><br>
                                         <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
                                         <div *ngIf="uploadedFileName" class="text-success">{{ uploadedFileName }}</div>
                                     </div>
@@ -170,7 +397,7 @@
                                     <div class="form-group">
                                         <label>Add Attachment</label>
                                         <input type="file" class="form-control" name="file"
-                                            (change)="onFileChange($event)" formControlName="file"><br>
+                                            (change)="onFileChange($event)" formControlName=""><br>
                                         <div *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</div>
                                         <div *ngIf="uploadedFileName" class="text-success">{{ uploadedFileName }}</div>
                                     </div>
@@ -185,13 +412,13 @@
                                                     <label class="form-check-label">Show Guests</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="showCosts"
-                                                        formControlName="showCosts" (change)="updateShowOptions()">
+                                                    <input type="checkbox" class="form-check-input" name="chargeable"
+                                                        formControlName="chargeable" (change)="updateShowOptions()">
                                                     <label class="form-check-label"> Chargeable</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" name="showTasks"
-                                                        formControlName="showTasks" (change)="updateShowOptions()">
+                                                    <input type="checkbox" class="form-check-input" name="isTask"
+                                                        formControlName="isTask" (change)="updateShowOptions()">
                                                     <label class="form-check-label"> Tasks</label>
                                                 </div>
                                             </div>
@@ -267,7 +494,7 @@
                                         </div><br>
 
 
-                                    </div>
+                                    </div> -->
 
 
 

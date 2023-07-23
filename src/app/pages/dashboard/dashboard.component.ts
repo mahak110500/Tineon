@@ -45,11 +45,12 @@ export class DashboardComponent implements OnInit {
 	approvedEvents: any = [];
 	allCoursesData: any = [];
 	clubNewsData: any = [];
-	allowAdvertisment:any;
-	bannerData:any= [];
-    eventData:any= [];
-    courseData:any= [];
-	
+	userId: any;
+	allowAdvertisment: any;
+	bannerData: any = [];
+	eventData: any = [];
+	courseData: any = [];
+
 
 	eventDates: { name: string; date: string; image: string; id: number }[] = [];
 
@@ -65,11 +66,9 @@ export class DashboardComponent implements OnInit {
 	) { }
 
 	ngOnInit(): void {
-        this.allowAdvertisment = localStorage.getItem('allowAdvertis')
-		console.log(this.allowAdvertisment);
-		
+		this.allowAdvertisment = localStorage.getItem('allowAdvertis')
 
-
+		this.getBannerData();
 		this.allEvents();
 		this.allCourses();
 		this.currentClubNews();
@@ -99,17 +98,45 @@ export class DashboardComponent implements OnInit {
 	}
 
 
+	getBannerData() {
+		this.dashboardService.getDesktopDeshboardBanner().subscribe((respData: any) => {
+			if (respData['isError'] == false) {
+				this.bannerData = respData['result']['banner'];
+
+				if (this.bannerData?.length > 0) {
+					this.bannerData.forEach((element: any) => {
+						element['category'] = JSON.parse(element.category);
+						element['placement'] = JSON.parse(element.placement);
+						element['display'] = JSON.parse(element.display);
+						// element['image'] = JSON.parse(element.image);
+
+
+						if ((element['redirectLink'].includes('https://')) || (element['redirectLink'].includes('http://'))) {
+							element['redirectLink'] = element.redirectLink;
+						} else {
+							element['redirectLink'] = '//' + element.redirectLink;
+						}
+					})
+				}
+			} else if (respData['code'] == 400) {
+				console.log('There is an error');
+			}
+
+		})
+	}
+
 	currentClubNews() {
 		this.dashboardService.getCurrentClubNews().subscribe((res: any) => {
 			this.clubNewsData = res;
 		})
 	}
 
-
 	allEvents() {
-		this.dashboardService.getApprovedEvents().subscribe((res) => {
+		this.userId = localStorage.getItem('user-id');
+		this.dashboardService.getApprovedEvents(this.userId).subscribe((res) => {
 			this.approvedEvents = res
-			// console.log(this.approvedEvents);
+			this.eventData = res;
+
 			this.processEvents();
 			this.combineDates();
 
@@ -122,6 +149,9 @@ export class DashboardComponent implements OnInit {
 		this.dashboardService.getAllCources(data).subscribe((res) => {
 			if (res?.isError == false) {
 				this.allCoursesData = res.result
+				this.courseData = res['result'];
+				console.log(this.courseData);
+				
 				// console.log(res);
 				// this.processCourses();
 				this.filterCourses();
@@ -264,7 +294,6 @@ export class DashboardComponent implements OnInit {
 
 		// 	return this.compareDates(date1, date2);
 		// });
-		console.log(this.filteredCourses);
 
 
 

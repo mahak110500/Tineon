@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReplaySubject, Observable, throwError } from 'rxjs';
@@ -161,6 +161,13 @@ export class AuthService implements OnInit {
 	*/
 	uniqueObjData(uniqueData: any, key: any) {
 		return [...new Map(uniqueData.map((item:any) => [item[key], item])).values()];
+	}
+
+	token:any;
+	bannerClickData(data: any): Observable<any> {
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+		return this.http.post(this.baseUrl + 'api/bannerClick', data, { headers });
 	}
 
 	

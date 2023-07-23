@@ -18,10 +18,10 @@ export class DashboardService implements OnInit {
 
 	}
 
-	getApprovedEvents() {
+	getApprovedEvents(id:number) {
 		this.token = localStorage.getItem('token');
 		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-		return this.http.get(this.baseUrl + 'api/approvedEvents/user/1', { headers });
+		return this.http.get(this.baseUrl + 'api/approvedEvents/user/' + id, { headers });
 	}
 
 
@@ -53,5 +53,12 @@ export class DashboardService implements OnInit {
 		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
 		return this.http.get<any>(this.baseUrl + "api/unapprovedParticipants/event/" + id, { headers });
 	}
+
+	getDesktopDeshboardBanner() {
+		this.token = localStorage.getItem('token');
+		const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+		return this.http.get<any>(this.baseUrl + "api/getBannerForDashboard_Desktop/", { headers });
+	} 
+
 
 }

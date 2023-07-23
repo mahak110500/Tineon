@@ -34,6 +34,8 @@ import { CreateEventsComponent } from './pages/events/create-events/create-event
 import { NgSelectModule } from '@ng-select/ng-select';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { ClubAppointmentsComponent } from './pages/club-appointments/club-appointments.component';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+
 
 
 
@@ -74,7 +76,8 @@ import { ClubAppointmentsComponent } from './pages/club-appointments/club-appoin
 		MatDialogModule,
 		NgSelectModule,
 		ModalModule.forRoot(),
-        NgxMaterialTimepickerModule
+        NgxMaterialTimepickerModule,
+		CarouselModule,
 
 	],
 	providers: [DatePipe,BsModalService],

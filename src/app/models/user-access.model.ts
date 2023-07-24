@@ -1,29 +1,29 @@
-export interface UserAccess {
-    admin :userRole;
-    editor :userRole;
-    functionary :userRole;
-    guest :userRole;
-    member :userRole;
-    secretary :userRole;
-    user :userRole;
-    member_light :userRole;
-    member_light_admin :userRole;
-
-}
-
 // export interface UserAccess {
-//     [key: string]: {
-//         admin :userRole;
-//         editor :userRole;
-//         functionary :userRole;
-//         guest :userRole;
-//         member :userRole;
-//         secretary :userRole;
-//         user :userRole;
-//         member_light :userRole;
-//         member_light_admin :userRole;
-//     };
-//   }
+//     admin :userRole;
+//     editor :userRole;
+//     functionary :userRole;
+//     guest :userRole;
+//     member :userRole;
+//     secretary :userRole;
+//     user :userRole;
+//     member_light :userRole;
+//     member_light_admin :userRole;
+
+// }
+
+export interface UserAccess {
+    admin: userRole;
+    editor: userRole;
+    functionary: userRole;
+    guest: userRole;
+    member: userRole;
+    secretary: userRole;
+    user: userRole;
+    member_light: userRole;
+    member_light_admin: userRole;
+    [key: string]: userRole; // Add the index signature
+  }
+  
 
 export interface userRole{
     authorization: AuthorizationAccess

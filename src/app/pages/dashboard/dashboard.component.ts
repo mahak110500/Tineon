@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 interface Event {
@@ -61,7 +62,8 @@ export class DashboardComponent implements OnInit {
 	constructor(
 		private dashboardService: DashboardService,
 		private router: Router,
-		private datePipe: DatePipe
+		private datePipe: DatePipe,
+		private authService: AuthService
 
 	) { }
 
@@ -69,8 +71,8 @@ export class DashboardComponent implements OnInit {
 		this.allowAdvertisment = localStorage.getItem('allowAdvertis')
 
 		this.getBannerData();
-		this.allEvents();
-		this.allCourses();
+		// this.allEvents();
+		// this.allCourses();
 		this.currentClubNews();
 
 		setTimeout(() => {
@@ -99,7 +101,11 @@ export class DashboardComponent implements OnInit {
 
 
 	getBannerData() {
+		this.authService.setLoader(true);
+
 		this.dashboardService.getDesktopDeshboardBanner().subscribe((respData: any) => {
+			this.authService.setLoader(false);
+
 			if (respData['isError'] == false) {
 				this.bannerData = respData['result']['banner'];
 
@@ -132,8 +138,11 @@ export class DashboardComponent implements OnInit {
 	}
 
 	allEvents() {
+		this.authService.setLoader(true);
+
 		this.userId = localStorage.getItem('user-id');
 		this.dashboardService.getApprovedEvents(this.userId).subscribe((res) => {
+			this.authService.setLoader(false);
 			this.approvedEvents = res
 			this.eventData = res;
 
@@ -145,14 +154,15 @@ export class DashboardComponent implements OnInit {
 
 
 	allCourses() {
+		this.authService.setLoader(true);
+
 		let data = '{}';
 		this.dashboardService.getAllCources(data).subscribe((res) => {
+			this.authService.setLoader(false);
+
 			if (res?.isError == false) {
 				this.allCoursesData = res.result
 				this.courseData = res['result'];
-				console.log(this.courseData);
-				
-				// console.log(res);
 				// this.processCourses();
 				this.filterCourses();
 				this.combineDates();
@@ -194,7 +204,8 @@ export class DashboardComponent implements OnInit {
 				const recurringDates = JSON.parse(event.recurring_dates);
 				recurringDates.forEach((date: any) => {
 					const eventDate = new Date(date.date_from);
-					const pictureVideo = JSON.parse(event.picture_video);
+					// const pictureVideo = JSON.parse(event.picture_video);
+					const pictureVideo = '';
 					if (eventDate >= today) {
 						this.eventDates.push({
 							name: event.name,
@@ -211,7 +222,8 @@ export class DashboardComponent implements OnInit {
 				const recurringDates = rule.all();
 
 				recurringDates.forEach(date => {
-					const pictureVideo = JSON.parse(event.picture_video);
+					// const pictureVideo = JSON.parse(event.picture_video);
+					const pictureVideo = '';
 
 					if (date >= today) {
 						this.eventDates.push({

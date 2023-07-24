@@ -408,12 +408,9 @@ export class ClubAppointmentsComponent implements OnInit {
                                             rules.forEach(function (val, index) {
                                                 let yourDate: Date = new Date(val)
                                                 let dt: string = yourDate.toISOString().split('T')[0];
-                                                let recurring_dates = element.recurring_dates;
+                                                let formatted_recurring_dates = element.recurring_dates;
 
-                                                let formatted_recurring_dates = JSON.parse(recurring_dates);
-
-                                                // Now, logging formatted_recurring_dates will show the desired output
-                                                console.log(formatted_recurring_dates);
+                                                let recurring_dates = JSON.parse(formatted_recurring_dates);
 
                                                 // console.log(JSON.parse(recurring_dates));
 
@@ -443,7 +440,6 @@ export class ClubAppointmentsComponent implements OnInit {
                                                     }
 
                                                     recurring_time = recurring_dates[0].start_time;
-
                                                     recurring_etime = recurring_dates[0].end_time;
                                                 } else {
                                                     recurring_time = element.date_from.split("T")["1"]
@@ -487,20 +483,14 @@ export class ClubAppointmentsComponent implements OnInit {
                                                     if (rrEvents.visibility == 2) {
                                                         if (rrEvents.author == self.userDetails.userId || self.userDetails.isAdmin == true) {
                                                             self.upcomingEvent.push(rrEvents);
-                                                            console.log(self.upcomingEvent);
-
                                                             self.upcomingEventList.push(rrEvents);
                                                         }
                                                     } else {
                                                         if (self.userDetails.roles[0] == 'guest' && rrEvents.show_guest_list == 'true') {
                                                             self.upcomingEvent.push(rrEvents);
-                                                            console.log(self.upcomingEvent);
-
                                                             self.upcomingEventList.push(rrEvents);
                                                         } else if (self.userDetails.roles[0] != 'guest') {
                                                             self.upcomingEvent.push(rrEvents);
-                                                            console.log(self.upcomingEvent);
-
                                                             self.upcomingEventList.push(rrEvents);
                                                         }
                                                     }
@@ -703,7 +693,8 @@ export class ClubAppointmentsComponent implements OnInit {
     */
     getCalendarData() {
         this.upcomingEvent.sort((a: any, b: any) => Number(new Date(a.date_from)) - Number(new Date(b.date_from)));
-        // console.log( this.upcomingEvent);
+        console.log( this.upcomingEvent);
+        
 
         this.currentEvent.sort((a: any, b: any) => Number(new Date(a.date_from)) - Number(new Date(b.date_from)));
     }
